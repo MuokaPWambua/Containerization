@@ -1,0 +1,26 @@
+services:
+    redis: 
+        image: redis
+        restart: always
+        volumes:
+            - .:/app/redis
+    app:
+        build: ./app
+        container_name: app
+        restart: always
+        command: sh ./app/entrypoint.sh
+        depends_on:
+            - redis
+        volumes:
+            - .:/app
+        expose:
+            - 8000
+        env_file:
+            - ./.env
+    nginx:
+      build: ./nginx
+      container_name: nginx
+      ports:
+          - "5000:5000"
+      volumes:
+          - .:/app/nginx
